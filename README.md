@@ -1,2 +1,2 @@
-# sibudi
+# SIBUDI
 Sistem Peminjaman Buku Mandiri
