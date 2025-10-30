@@ -1,0 +1,268 @@
+<!-- Preline sudah kamu load di <head> lewat partial -->
+<%- include('partials/header-simple', { title: 'SIBUDI - Login' }) %>
+
+<style>
+  /* Background Image with Overlay */
+  .animated-bg {
+    background-image: url('/images/Perpustakaan Unand.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .animated-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(47, 122, 51, 0.85) 0%, rgba(47, 122, 51, 0.6) 50%, rgba(255, 255, 255, 0.7) 100%);
+    z-index: 1;
+  }
+
+  /* Floating Particles */
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    animation: float linear infinite;
+    pointer-events: none;
+    backdrop-filter: blur(2px);
+    z-index: 2;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.8;
+    }
+    90% {
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(-100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Geometric shapes floating */
+  .login-shape {
+    position: absolute;
+    opacity: 0.12;
+    animation: floatShape 20s ease-in-out infinite;
+    z-index: 2;
+  }
+
+  @keyframes floatShape {
+    0%, 100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+      transform: translate(50px, -50px) rotate(90deg);
+    }
+    50% {
+      transform: translate(0, -100px) rotate(180deg);
+    }
+    75% {
+      transform: translate(-50px, -50px) rotate(270deg);
+    }
+  }
+
+  .login-shape-1 {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    top: 10%;
+    left: 10%;
+    animation-duration: 25s;
+  }
+
+  .login-shape-2 {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, #2F7A33 0%, transparent 100%);
+    border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+    top: 60%;
+    right: 15%;
+    animation-duration: 20s;
+    animation-delay: -5s;
+  }
+
+  .login-shape-3 {
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
+    border-radius: 30% 70% 53% 47% / 44% 48% 52% 56%;
+    bottom: 15%;
+    left: 20%;
+    animation-duration: 30s;
+    animation-delay: -10s;
+  }
+</style>
+
+<body class="min-h-screen animated-bg relative overflow-hidden">
+  <!-- Floating Geometric Shapes -->
+  <div class="login-shape login-shape-1"></div>
+  <div class="login-shape login-shape-2"></div>
+  <div class="login-shape login-shape-3"></div>
+
+  <!-- Floating Particles -->
+  <div id="particles-container"></div>
+
+  <!-- Wrapper: center content -->
+  <main class="flex min-h-screen items-center justify-center px-4 py-10 relative z-10">
+    <!-- Card -->
+    <div class="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl bg-white/80 backdrop-blur-lg ring-1 ring-black/5">
+      <!-- Left: form -->
+      <section class="p-8 md:p-12">
+        <!-- Brand -->
+        <div class="mb-10 text-center md:text-left">
+          <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-green-800">
+            SIBUDI
+          </h1>
+          <p class="mt-2 text-base md:text-lg text-gray-700">
+            Sistem Peminjaman dan Perpanjangan Buku Mandiri Unand
+          </p>
+        </div>
+
+        <!-- Form -->
+        <form action="/login" method="post" class="space-y-6">
+          <!-- NIM -->
+          <div class="space-y-2">
+            <label for="nim" class="block text-sm font-medium text-gray-800">NIM</label>
+            <input
+              id="nim"
+              name="nim"
+              type="text"
+              placeholder="Masukkan NIM"
+              required
+              class="hs-input w-full rounded-full border-gray-300 px-6 py-3.5 text-gray-900 placeholder:text-gray-400 focus:border-green-600 focus:ring-green-600/40"
+            />
+          </div>
+
+          <!-- Password (Toggle Show/Hide) -->
+          <div class="space-y-2">
+            <label for="password" class="block text-sm font-medium text-gray-800">Password</label>
+            <div class="relative">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Masukkan Password"
+                required
+                class="w-full rounded-full border border-gray-300 px-6 py-3.5 pr-12 text-gray-900 placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/40 focus:outline-none transition-all"
+              />
+              <button
+                type="button"
+                id="toggle-password"
+                class="absolute inset-y-0 right-4 my-auto inline-flex size-9 items-center justify-center rounded-full text-gray-600 hover:text-green-700 focus:outline-none transition-colors"
+                aria-label="Tampilkan/Sembunyikan Password">
+                <i id="eye-icon" class="fa-solid fa-eye text-lg"></i>
+              </button>
+            </div>
+
+            <div class="mt-1 text-right">
+              <a href="/lupa-password" class="text-sm text-gray-600 hover:text-green-800 transition-colors">Lupa Kata Sandi?</a>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            class="w-full inline-flex items-center justify-center rounded-full bg-green-700 px-6 py-3.5 text-white text-sm font-semibold tracking-wide hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 active:scale-[0.98] transition">
+            LOGIN
+          </button>
+        </form>
+      </section>
+
+      <!-- Right: image -->
+      <aside class="relative hidden md:block md:min-h-[520px]">
+        <img
+          src="/images/Perpustakaan Unand.jpg"
+          alt="Universitas Andalas"
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-green-800/30 to-transparent"></div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Popup partial -->
+  <%- include('partials/popup') %>
+
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script src="/js/popup.js"></script>
+
+  <!-- Particles Animation Script -->
+  <script>
+    // Create floating particles - Lebih besar dan tidak ramai
+    function createParticles() {
+      const container = document.getElementById('particles-container');
+      const particleCount = 12; // Jumlah partikel dikurangi dari 30 menjadi 12
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random size between 40px and 80px (lebih besar)
+        const size = Math.random() * 40 + 40;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        // Random horizontal position
+        particle.style.left = `${Math.random() * 100}%`;
+        
+        // Random animation duration between 15s and 30s (lebih lambat)
+        const duration = Math.random() * 15 + 15;
+        particle.style.animationDuration = `${duration}s`;
+        
+        // Random delay to stagger the animation
+        const delay = Math.random() * 15;
+        particle.style.animationDelay = `${delay}s`;
+        
+        container.appendChild(particle);
+      }
+    }
+
+    // Toggle Password Visibility
+    function initPasswordToggle() {
+      const toggleBtn = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eye-icon');
+
+      if (toggleBtn && passwordInput && eyeIcon) {
+        toggleBtn.addEventListener('click', function() {
+          // Toggle input type
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          
+          // Toggle icon
+          if (type === 'text') {
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+          } else {
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+          }
+        });
+      }
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      createParticles();
+      initPasswordToggle();
+    });
+  </script>
+</body>
+</html>

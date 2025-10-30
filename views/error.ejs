@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="/css/output.css" />
+        <script src="https://unpkg.com/preline/dist/preline.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #f9fafb;
+            }
+        </style>
+    </head>
+
+    <body class="min-h-screen flex flex-col">
+        <main class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-white to-green-50 px-4">
+            <div class="bg-white border border-gray-200 rounded-2xl shadow-lg p-8 max-w-lg w-full text-center">
+                <div class="flex justify-center mb-4">
+                    <div class="w-16 h-16 flex items-center justify-center bg-[#FFD700]/20 text-[#2F7A33] rounded-full shadow-sm">
+                        <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
+                    </div>
+                </div>
+
+                <!-- Pesan Error -->
+                <h1 class="text-2xl font-semibold text-[#2F7A33] mb-2">Oops... Ada yang Salah Nih 😅</h1>
+                <p class="text-gray-600 mb-4"><%= message || 'Terjadi kesalahan yang tidak terduga pada sistem.' %></p>
+
+                <!-- Status Code -->
+                <% if (error && error.status) { %>
+                <p class="text-sm text-gray-400 mb-6">Kode Error: <span class="font-mono"><%= error.status %></span></p>
+                <% } %>
+
+                <!-- Tombol Aksi -->
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                    <a href="/" class="px-5 py-2.5 bg-[#2F7A33] text-white rounded-lg hover:bg-[#256528] transition font-medium"> <i class="fa-solid fa-house mr-2"></i> Kembali ke Beranda </a>
+                    <a href="javascript:history.back()" class="px-5 py-2.5 border border-[#2F7A33] text-[#2F7A33] rounded-lg hover:bg-[#2F7A33]/10 transition font-medium"> <i class="fa-solid fa-arrow-left mr-2"></i> Halaman Sebelumnya </a>
+                </div>
+
+                <!-- Detail Error -->
+                <% if (process.env.NODE_ENV !== 'production') { %>
+                <details class="mt-6 text-left bg-gray-50 p-4 rounded-lg border border-gray-100">
+                    <summary class="cursor-pointer text-sm text-gray-500 font-medium">Rincian Teknis (Dev Mode)</summary>
+                    <pre class="text-xs text-gray-600 mt-2 overflow-auto whitespace-pre-wrap"><%= error.stack %></pre>
+                </details>
+                <% } %>
+            </div>
+
+            <!-- Footer -->
+            <p class="mt-8 text-xs text-gray-400">© <%= new Date().getFullYear() %> SiBuDi | Sistem Informasi Perpanjangan Peminjaman Buku Mandiri</p>
+        </main>
+    </body>
+</html>

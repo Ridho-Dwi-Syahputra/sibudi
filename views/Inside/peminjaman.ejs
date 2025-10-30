@@ -1,0 +1,516 @@
+<%- include('../partials/header-simple', { title: 'Mode Kios - Peminjaman Buku | SiBuDi' }) %>
+
+<body class="min-h-screen" style="background: linear-gradient(135deg, #E8F5E9 0%, #F1F8E9 100%); font-family: 'Inter', sans-serif;">
+
+  <!-- Navbar -->
+  <%- include('../partials/navbarInside', { activeNav: 'Peminjaman' }) %>
+
+  <!-- Main Content (with top padding for fixed navbar) -->
+  <main class="container mx-auto px-4 sm:px-6 py-6 pt-20 max-w-7xl">
+
+    <!-- ========== Langkah 1: Scan Kode Buku ========== -->
+    <div class="step-card bg-white rounded-2xl shadow-md p-8 sm:p-10 mb-5 transition-all duration-300">
+      <div class="flex items-start sm:items-center gap-4 mb-6">
+        <div class="step-icon flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-300">
+          <i class="fas fa-barcode text-2xl"></i>
+        </div>
+        <div class="flex-1">
+          <h2 class="step-title text-lg sm:text-xl font-bold mb-1 transition-colors duration-300">Langkah 1: Scan Kode Buku</h2>
+          <p class="text-gray-600 text-sm">Gunakan scanner barcode atau ketik manual</p>
+        </div>
+      </div>
+
+      <form id="scanForm">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Kode Buku / Item Code</label>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input 
+              type="text" 
+              id="itemCodeInput" 
+              name="item_code"
+              placeholder="Contoh: BK001234"
+              class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2F7A33] focus:border-[#2F7A33] outline-none transition text-base"
+              autofocus
+              required
+            >
+            <button 
+              type="submit" 
+              class="bg-[#2F7A33] hover:bg-[#256828] text-white px-8 py-3 rounded-xl font-semibold transition duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+            >
+              <i class="fas fa-search"></i>
+              Cari Buku
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- ========== Langkah 2: Informasi Buku (Hidden by default) ========== -->
+    <div id="bookInfoSection" class="step-card bg-white rounded-2xl shadow-md p-8 sm:p-10 hidden transition-all duration-300" style="animation: slideDown 0.4s ease-out;">
+      <div class="flex items-start sm:items-center gap-4 mb-6">
+        <div class="step-icon flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300">
+          <i class="fas fa-book text-2xl"></i>
+        </div>
+        <div class="flex-1">
+          <h2 class="step-title text-lg sm:text-xl font-bold mb-1 transition-colors duration-300">Langkah 2: Informasi Buku</h2>
+          <p class="text-gray-600 text-sm">Buku ditemukan dan siap dipinjam</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- Book Cover -->
+        <div class="flex-shrink-0 mx-auto md:mx-0">
+          <img 
+            id="bookCover" 
+            src="/images/buku.png" 
+            alt="Cover Buku" 
+            class="w-40 h-56 md:w-48 md:h-64 object-cover rounded-xl shadow-lg border-2 border-gray-200"
+          >
+        </div>
+
+        <!-- Book Details -->
+        <div class="flex-1">
+          <h3 id="bookTitle" class="text-xl sm:text-2xl font-bold text-[#2F7A33] mb-6 leading-tight">-</h3>
+          
+          <div class="space-y-3 mb-6">
+            <div id="authorRow" class="flex items-start">
+              <span class="font-semibold text-gray-700 flex-shrink-0" style="width: 160px;">Penulis</span>
+              <span class="text-gray-600 flex-1">: <span id="bookAuthor">-</span></span>
+            </div>
+            <div id="yearRow" class="flex items-start">
+              <span class="font-semibold text-gray-700 flex-shrink-0" style="width: 160px;">Tahun Terbit</span>
+              <span class="text-gray-600 flex-1">: <span id="bookYear">-</span></span>
+            </div>
+            <div id="codeRow" class="flex items-start">
+              <span class="font-semibold text-gray-700 flex-shrink-0" style="width: 160px;">Kode Buku</span>
+              <span class="text-gray-600 flex-1">: <span id="bookCode" class="font-mono bg-gray-100 px-3 py-1 rounded-lg text-gray-800 text-sm inline-block">-</span></span>
+            </div>
+            <div id="pagesRow" class="flex items-start hidden">
+              <span class="font-semibold text-gray-700 flex-shrink-0" style="width: 160px;">Jumlah Halaman</span>
+              <span class="text-gray-600 flex-1">: <span id="bookPages">-</span></span>
+            </div>
+            <div id="sizeRow" class="flex items-start hidden">
+              <span class="font-semibold text-gray-700 flex-shrink-0" style="width: 160px;">Ukuran Buku</span>
+              <span class="text-gray-600 flex-1">: <span id="bookSize">-</span></span>
+            </div>
+          </div>
+          
+          <button 
+            id="btnOpenAuth" 
+            class="bg-[#FFD700] hover:bg-[#FFC107] text-[#2F7A33] px-6 py-3 rounded-xl font-semibold transition duration-200 flex items-center gap-2 shadow-md hover:shadow-lg w-full sm:w-auto justify-center"
+          >
+            <i class="fas fa-user-check"></i>
+            Lanjutkan Peminjaman
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================== -->
+  <!-- Modal: Autentikasi Peminjam -->
+  <!-- ========================== -->
+  <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4" style="animation: fadeIn 0.3s ease-out;">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+      <div class="bg-gradient-to-r from-[#2F7A33] to-[#256828] text-white p-6">
+        <h3 class="text-xl font-bold flex items-center gap-2">
+          <i class="fas fa-user-lock"></i> Autentikasi Peminjam
+        </h3>
+        <p class="text-green-100 text-sm mt-1">Masukkan NIM/NIP dan Password anggota</p>
+      </div>
+
+      <form id="authForm" class="p-6 space-y-5">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">NIM/NIP Anggota</label>
+          <input 
+            type="text" 
+            id="borrowerNim" 
+            placeholder="Contoh: 2311522033"
+            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2F7A33] focus:border-[#2F7A33] outline-none transition"
+            required
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+          <input 
+            type="password" 
+            id="borrowerPassword" 
+            placeholder="Password anggota"
+            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2F7A33] focus:border-[#2F7A33] outline-none transition"
+            required
+          >
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button 
+            type="button" 
+            id="btnCancelAuth" 
+            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-3 rounded-xl font-semibold transition duration-200"
+          >
+            Batal
+          </button>
+          <button 
+            type="submit" 
+            class="flex-1 bg-[#2F7A33] hover:bg-[#256828] text-white px-4 py-3 rounded-xl font-semibold transition duration-200 flex items-center justify-center gap-2 shadow-md"
+          >
+            <i class="fas fa-check-circle"></i>
+            Proses Peminjaman
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Include Popup Partial -->
+  <%- include('../partials/popup') %>
+
+  <!-- JavaScript Logic -->
+  <script src="/js/main.js"></script>
+  <script src="/js/popup.js"></script>
+  <script>
+    // ============================================
+    // Global State
+    // ============================================
+    let currentBookCode = null;
+    let currentBookData = null;
+
+    // ============================================
+    // Elements
+    // ============================================
+    const scanForm = document.getElementById('scanForm');
+    const itemCodeInput = document.getElementById('itemCodeInput');
+    const bookInfoSection = document.getElementById('bookInfoSection');
+    const btnOpenAuth = document.getElementById('btnOpenAuth');
+    const authModal = document.getElementById('authModal');
+    const authForm = document.getElementById('authForm');
+    const btnCancelAuth = document.getElementById('btnCancelAuth');
+
+    // ============================================
+    // Helper: Parse Collation
+    // ============================================
+    function parseCollation(collation) {
+      if (!collation || collation === '-' || !collation.trim()) {
+        return { pages: null, size: null };
+      }
+
+      const parts = collation.split(';').map(p => p.trim());
+      let pages = null;
+      let size = null;
+
+      parts.forEach(part => {
+        if (/\d+\s*(hal|hlm|p\.|pages)/i.test(part)) {
+          const match = part.match(/(\d+)\s*(hal|hlm|p\.|pages)/i);
+          if (match) {
+            pages = match[1] + ' halaman';
+          }
+        }
+        else if (/\d+\s*(x\s*\d+)?\s*cm/i.test(part)) {
+          const match = part.match(/(\d+\s*(x\s*\d+)?\s*cm)/i);
+          if (match) {
+            size = match[1];
+          }
+        }
+      });
+
+      return { pages, size };
+    }
+
+    // ============================================
+    // Event: Scan / Cari Buku
+    // ============================================
+    scanForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const itemCode = itemCodeInput.value.trim();
+
+      if (!itemCode) {
+        if (typeof window.showPopup === 'function') {
+          window.showPopup({
+            type: 'warning',
+            title: 'Input Kosong',
+            message: 'Kode buku tidak boleh kosong.'
+          });
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch('/inside/peminjaman/find', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ item_code: itemCode })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          currentBookCode = data.book.item_code;
+          currentBookData = data.book;
+          displayBookInfo(data.book);
+          bookInfoSection.classList.remove('hidden');
+          
+          setTimeout(() => {
+            bookInfoSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 100);
+        } else {
+          if (typeof window.showPopup === 'function') {
+            window.showPopup({
+              type: data.type || 'error',
+              title: data.title || 'Gagal',
+              message: data.message
+            });
+          }
+          resetBookInfo();
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        if (typeof window.showPopup === 'function') {
+          window.showPopup({
+            type: 'error',
+            title: 'Kesalahan Server',
+            message: 'Terjadi kesalahan saat mencari buku.'
+          });
+        }
+      }
+    });
+
+    // ============================================
+    // Event: Buka Modal Autentikasi
+    // ============================================
+    btnOpenAuth.addEventListener('click', () => {
+      authModal.classList.remove('hidden');
+      authModal.classList.add('flex');
+      document.getElementById('borrowerNim').focus();
+    });
+
+    // ============================================
+    // Event: Tutup Modal Autentikasi
+    // ============================================
+    btnCancelAuth.addEventListener('click', () => {
+      authModal.classList.add('hidden');
+      authModal.classList.remove('flex');
+      authForm.reset();
+    });
+
+    authModal.addEventListener('click', (e) => {
+      if (e.target === authModal) {
+        authModal.classList.add('hidden');
+        authModal.classList.remove('flex');
+        authForm.reset();
+      }
+    });
+
+    // ============================================
+    // Event: Submit Autentikasi & Proses Peminjaman
+    // ============================================
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const borrowerNim = document.getElementById('borrowerNim').value.trim();
+      const borrowerPassword = document.getElementById('borrowerPassword').value;
+
+      if (!borrowerNim || !borrowerPassword) {
+        if (typeof window.showPopup === 'function') {
+          window.showPopup({
+            type: 'warning',
+            title: 'Data Tidak Lengkap',
+            message: 'NIM/NIP dan Password harus diisi.'
+          });
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch('/inside/api/kiosk/borrow', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            item_code: currentBookCode,
+            borrower_id: borrowerNim,
+            borrower_password: borrowerPassword
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          authModal.classList.add('hidden');
+          authModal.classList.remove('flex');
+          authForm.reset();
+          
+          const receiptData = encodeURIComponent(JSON.stringify(data.receipt));
+          window.location.href = `/inside/strukPinjam?data=${receiptData}`;
+        } else {
+          if (typeof window.showPopup === 'function') {
+            window.showPopup({
+              type: data.type || 'error',
+              title: data.title || 'Gagal',
+              message: data.message
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        if (typeof window.showPopup === 'function') {
+          window.showPopup({
+            type: 'error',
+            title: 'Kesalahan Server',
+            message: 'Terjadi kesalahan saat memproses peminjaman.'
+          });
+        }
+      }
+    });
+
+    // ============================================
+    // Function: Display Book Info
+    // ============================================
+    function displayBookInfo(book) {
+      document.getElementById('bookCover').src = book.cover || '/images/buku.png';
+      document.getElementById('bookTitle').textContent = book.title || 'Judul tidak tersedia';
+      
+      // Penulis
+      if (book.author && book.author !== '-') {
+        document.getElementById('bookAuthor').textContent = book.author;
+        document.getElementById('authorRow').classList.remove('hidden');
+      } else {
+        document.getElementById('authorRow').classList.add('hidden');
+      }
+      
+      // Tahun Terbit
+      if (book.publish_year && book.publish_year !== '-') {
+        document.getElementById('bookYear').textContent = book.publish_year;
+        document.getElementById('yearRow').classList.remove('hidden');
+      } else {
+        document.getElementById('yearRow').classList.add('hidden');
+      }
+      
+      // Kode Buku (selalu tampil)
+      document.getElementById('bookCode').textContent = book.item_code || '-';
+
+      // Parse collation untuk halaman dan ukuran
+      if (book.collation) {
+        const parsed = parseCollation(book.collation);
+        
+        // Jumlah Halaman
+        if (parsed.pages) {
+          document.getElementById('bookPages').textContent = parsed.pages;
+          document.getElementById('pagesRow').classList.remove('hidden');
+        } else {
+          document.getElementById('pagesRow').classList.add('hidden');
+        }
+        
+        // Ukuran Buku
+        if (parsed.size) {
+          document.getElementById('bookSize').textContent = parsed.size;
+          document.getElementById('sizeRow').classList.remove('hidden');
+        } else {
+          document.getElementById('sizeRow').classList.add('hidden');
+        }
+      } else {
+        document.getElementById('pagesRow').classList.add('hidden');
+        document.getElementById('sizeRow').classList.add('hidden');
+      }
+    }
+
+    // ============================================
+    // Function: Reset Book Info
+    // ============================================
+    function resetBookInfo() {
+      currentBookCode = null;
+      currentBookData = null;
+      bookInfoSection.classList.add('hidden');
+      document.getElementById('bookCover').src = '/images/buku.png';
+      document.getElementById('bookTitle').textContent = '-';
+      document.getElementById('bookAuthor').textContent = '-';
+      document.getElementById('bookYear').textContent = '-';
+      document.getElementById('bookCode').textContent = '-';
+      document.getElementById('bookPages').textContent = '-';
+      document.getElementById('bookSize').textContent = '-';
+      
+      // Hide all rows
+      document.getElementById('authorRow').classList.add('hidden');
+      document.getElementById('yearRow').classList.add('hidden');
+      document.getElementById('pagesRow').classList.add('hidden');
+      document.getElementById('sizeRow').classList.add('hidden');
+    }
+
+    // ============================================
+    // Auto focus on page load
+    // ============================================
+    window.addEventListener('load', () => {
+      itemCodeInput.focus();
+    });
+  </script>
+
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================ */
+    /* 3D Hover Effect untuk Step Cards */
+    /* ============================================ */
+    .step-card {
+      perspective: 1000px;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .step-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(47, 122, 51, 0.15);
+    }
+
+    /* Default state: Kuning */
+    .step-icon {
+      background: linear-gradient(135deg, #FFD700, #FFC107);
+      color: #2F7A33;
+    }
+
+    .step-title {
+      color: #2F7A33;
+    }
+
+    /* Hover state: Hijau */
+    .step-card:hover .step-icon {
+      background: linear-gradient(135deg, #2F7A33, #256828);
+      color: white;
+      transform: scale(1.1) rotateY(10deg);
+    }
+
+    .step-card:hover .step-title {
+      color: #FFD700;
+    }
+
+    /* Responsive layout */
+    @media (max-width: 640px) {
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      
+      .step-card:hover {
+        transform: translateY(-4px);
+      }
+    }
+  </style>
+</body>
+</html>

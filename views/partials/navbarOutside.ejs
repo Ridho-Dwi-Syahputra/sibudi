@@ -1,0 +1,122 @@
+<%# =========================================================
+    Navbar Outside (Member/Peminjam) - SiBuDi
+    Fitur: Gambar profil otomatis dari DB dengan fallback
+========================================================= %>
+
+<%
+    const profileImageUrl = user && user.member_image
+        ? `/uploads/profiles/${user.member_image}`
+        : '/images/profile-avatar.png';
+%>
+
+
+<nav class="fixed top-0 left-0 w-full bg-[#F8FFF8] shadow-sm z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Brand -->
+            <div class="flex items-center">
+                <a href="/" class="flex items-center gap-3">
+                    <img src="/images/Perpustakaan Unand.jpg" alt="SiBuDi Logo" class="w-10 h-10 rounded" />
+                    <span class="text-2xl font-bold text-[#2F7A33] tracking-tight">SIBUDI</span>
+                </a>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-6">
+                <a href="/outside/dashboard" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="Dashboard">Dashboard</a>
+                <a href="/outside/rulesPinjam" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="RulesPinjam">Aturan Peminjaman</a>
+                <a href="/outside/detailPinjam" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="DetailPinjam">Detail Peminjaman</a>
+                <a href="/outside/about" class="nav-link text-gray-700 hover:text-[#2F7A33] font-medium transition" data-name="About">Tentang System</a>
+            </div>
+
+            <!-- Profile Dropdown -->
+            <div class="hidden md:flex items-center relative">
+                <% if (user) { %>
+                <button id="userDropdownButton" type="button" class="flex items-center gap-2 px-3 py-1 text-[#2F7A33] rounded-md hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-[#FFD700]" aria-expanded="false">
+                    <img 
+                        src="<%= profileImageUrl %>" 
+                        alt="Profile" 
+                        class="w-8 h-8 rounded-full object-cover border-2 border-[#2F7A33]"
+                        onerror="this.onerror=null; this.src='/images/profile-avatar.png';"
+                    />
+                    <span class="text-sm font-medium"><%= user.member_name || user.name %></span>
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="userDropdownMenu" class="absolute right-0 top-12 w-48 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
+                    <a href="/outside/profile" class="block px-4 py-2 text-gray-700 hover:bg-[#F8FFF8] hover:text-[#2F7A33] transition">Lihat Profil</a>
+                    <div class="border-t my-1"></div>
+                    <a href="/logout" class="block px-4 py-2 text-red-600 hover:bg-red-50 font-medium transition">Logout</a>
+                </div>
+                <% } else { %>
+                <a href="/login" class="px-4 py-1 bg-[#FFD700] text-[#2F7A33] rounded-lg text-sm font-medium hover:bg-yellow-400 transition">Login</a>
+                <% } %>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="md:hidden flex items-center">
+                <button id="nav-outside-toggle" aria-label="Toggle menu" class="p-2 rounded-md text-[#2F7A33] focus:outline-none focus:ring-2 focus:ring-[#FFD700]">
+                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <style>
+        .nav-active {
+            color: #2f7a33 !important;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #ffd700;
+            border-radius: 2px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('nav-outside-toggle');
+            const closeBtn = document.getElementById('nav-outside-close');
+            const menu = document.getElementById('nav-outside-menu');
+            const userDropdownButton = document.getElementById('userDropdownButton');
+            const userDropdownMenu = document.getElementById('userDropdownMenu');
+
+            toggleBtn?.addEventListener('click', () => menu.classList.remove('translate-x-full'));
+            closeBtn?.addEventListener('click', () => menu.classList.add('translate-x-full'));
+
+            // Dropdown toggle
+            userDropdownButton?.addEventListener('click', () => {
+                userDropdownMenu.classList.toggle('hidden');
+            });
+
+            // Klik di luar dropdown buat nutup
+            document.addEventListener('click', (e) => {
+                if (!userDropdownButton?.contains(e.target) && !userDropdownMenu?.contains(e.target)) {
+                    userDropdownMenu?.classList.add('hidden');
+                }
+            });
+
+            // Highlight active nav
+            const activeName = "<%= typeof activeNav !== 'undefined' ? activeNav : '' %>";
+            document.querySelectorAll('.nav-link, .nav-link-mobile').forEach((link) => {
+                const name = link.dataset.name;
+                if (name && activeName && name.toLowerCase() === activeName.toLowerCase()) {
+                    link.classList.add('nav-active');
+                }
+            });
+        });
+    </script>
+</nav>

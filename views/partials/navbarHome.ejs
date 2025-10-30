@@ -1,0 +1,379 @@
+<%# ========================================================= Navbar Home (Landing Page) - SiBuDi Tema: Hijau Unand (#2F7A33), Kuning (#FFD700), Putih (#F8FFF8) Efek mobile: slide kanan saat toggle ditekan Parameter aktif: activeNav =>
+"Home" | "About" | "Panduan" ========================================================= %>
+
+<nav class="fixed top-0 left-0 w-full bg-[#F8FFF8] shadow-sm z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Brand -->
+            <div class="flex items-center">
+                <a href="/" class="flex items-center gap-3">
+                    <img src="/images/Perpustakaan Unand.jpg" alt="SiBuDi Logo" class="w-10 h-10 rounded" />
+                    <span class="text-2xl font-bold text-[#2F7A33] tracking-tight"> SIBUDI </span>
+                </a>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-8 relative nav-container">
+                <div id="nav-slider" class="absolute bg-[#2F7A33]/10 rounded-lg transition-all duration-300 ease-in-out"></div>
+                <a href="/" class="nav-link relative z-10 text-gray-700 hover:text-[#2F7A33] font-medium transition py-2 px-3" data-name="Home" data-url="/" data-index="0"> Home </a>
+                <a href="#about" class="nav-link relative z-10 text-gray-700 hover:text-[#2F7A33] font-medium transition py-2 px-3" data-name="About" data-url="#about" data-index="1"> About </a>
+            </div>
+
+            <!-- Login/User Button -->
+            <div class="hidden md:flex items-center gap-3">
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <!-- User sudah login -->
+                    <span class="text-gray-700 font-medium">Halo, <%= user.name || user.realname || user.username %></span>
+                    <% if (user.role === 'member') { %>
+                        <a href="/outside/dashboard" class="btn-animated px-4 py-2 bg-[#2F7A33] text-white rounded-lg font-semibold hover:bg-[#256328] transition" data-url="/outside/dashboard"> Dashboard </a>
+                    <% } else if (user.role === 'pustakawan') { %>
+                        <a href="/inside/peminjaman" class="btn-animated px-4 py-2 bg-[#2F7A33] text-white rounded-lg font-semibold hover:bg-[#256328] transition" data-url="/inside/peminjaman"> Kios </a>
+                    <% } %>
+                    <a href="/logout" class="btn-animated px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition" data-url="/logout"> Logout </a>
+                <% } else { %>
+                    <!-- User belum login -->
+                    <a href="/login" class="btn-animated px-4 py-2 bg-[#2F7A33] text-white rounded-lg font-semibold hover:bg-[#256328] transition" data-url="/login"> Login </a>
+                <% } %>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="md:hidden flex items-center">
+                <button id="nav-toggle" aria-label="Toggle menu" class="p-2 rounded-md text-[#2F7A33] focus:outline-none focus:ring-2 focus:ring-[#FFD700]">
+                    <svg id="menu-icon" class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Menu -->
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-3/4 bg-[#F8FFF8] shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <div class="flex flex-col h-full justify-between">
+            <div class="p-6 space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-[#2F7A33]">SIBUDI</h2>
+                    <button id="close-menu" class="text-[#2F7A33] focus:outline-none">
+                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex flex-col space-y-4 mt-8">
+                    <a href="/" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Home">Home</a>
+                    <a href="#about" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="About">About</a>
+                    <a href="/panduan" class="nav-link-mobile text-gray-800 text-lg font-medium hover:text-[#2F7A33] transition" data-name="Panduan">Panduan Pengguna</a>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <!-- User sudah login -->
+                    <div class="space-y-3">
+                        <p class="text-center text-gray-700 font-medium mb-2">Halo, <%= user.name || user.realname || user.username %></p>
+                        <% if (user.role === 'member') { %>
+                            <a href="/outside/dashboard" class="block w-full text-center py-2 bg-[#2F7A33] text-white font-bold rounded-lg hover:bg-[#256328] transition"> Dashboard </a>
+                        <% } else if (user.role === 'pustakawan') { %>
+                            <a href="/inside/peminjaman" class="block w-full text-center py-2 bg-[#2F7A33] text-white font-bold rounded-lg hover:bg-[#256328] transition"> Kios </a>
+                        <% } %>
+                        <a href="/logout" class="block w-full text-center py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition"> Logout </a>
+                    </div>
+                <% } else { %>
+                    <!-- User belum login -->
+                    <a href="/login" class="block w-full text-center py-2 bg-[#FFD700] text-[#2F7A33] font-bold rounded-lg hover:bg-yellow-400 transition"> Login </a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Page Animation -->
+    <div id="page-loader" class="fixed inset-0 bg-white z-[9999] opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="relative w-16 h-16">
+                <div class="loader-spinner"></div>
+            </div>
+            <p class="mt-4 text-[#2F7A33] font-semibold">Memuat halaman...</p>
+        </div>
+    </div>
+
+    <style>
+        /* Highlight aktif navbar dengan animasi background sliding */
+        .nav-active {
+            color: #2f7a33 !important;
+            font-weight: 600;
+        }
+        
+        /* Animasi ripple effect saat klik */
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(47, 122, 51, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .nav-link:active::before {
+            width: 200px;
+            height: 200px;
+            animation: ripple 0.6s ease-out;
+        }
+        
+        /* Smooth transition untuk content loading */
+        .page-content {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .loading {
+            opacity: 0.5;
+        }
+        
+        /* Loading Spinner Animation */
+        .loader-spinner {
+            width: 64px;
+            height: 64px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #2F7A33;
+            border-right: 4px solid #FFD700;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Loading overlay fade effect */
+        #page-loader {
+            background: linear-gradient(135deg, rgba(248, 255, 248, 0.95) 0%, rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        #page-loader.show {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Nav slider enhancement */
+        #nav-slider {
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 2px 8px rgba(47, 122, 51, 0.15);
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hide loader saat halaman dimuat
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.classList.remove('show');
+            }
+            
+            // Mobile toggle logic
+            const toggleBtn = document.getElementById('nav-toggle');
+            const closeBtn = document.getElementById('close-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            toggleBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('translate-x-full');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+            });
+
+            // Active nav highlighting + helpers
+            const activeName = "<%= typeof activeNav !== 'undefined' ? activeNav : '' %>";
+            const desktopLinks = Array.from(document.querySelectorAll('.nav-link'));
+            const mobileLinks = Array.from(document.querySelectorAll('.nav-link-mobile'));
+
+            function setActiveByName(name) {
+                desktopLinks.forEach(l => l.classList.toggle('nav-active', l.dataset.name === name));
+                mobileLinks.forEach(l => l.classList.toggle('nav-active', l.dataset.name === name));
+                const link = document.querySelector(`.nav-link[data-name="${name}"]`);
+                if (link) updateSliderPosition(link);
+            }
+
+            // Update navbar slider position
+            function updateSliderPosition(activeLink) {
+                const slider = document.getElementById('nav-slider');
+                if (!slider) return;
+                
+                const link = activeLink || document.querySelector(`.nav-link[data-name="${activeName}"]`);
+                if (!link) return;
+                
+                const container = document.querySelector('.nav-container');
+                if (!container) return;
+                
+                const containerRect = container.getBoundingClientRect();
+                const linkRect = link.getBoundingClientRect();
+                
+                const left = linkRect.left - containerRect.left;
+                const width = linkRect.width;
+                
+                slider.style.width = `${width + 16}px`;
+                slider.style.left = `${left - 8}px`;
+                slider.style.height = '36px';
+                
+                // Store initial state
+                if (!slider.hasAttribute('data-initialized')) {
+                    slider.setAttribute('data-initialized', 'true');
+                }
+            }
+
+            // Set initial slider position
+            setTimeout(() => updateSliderPosition(), 100);
+
+            // Handle link clicks dengan AJAX animation
+            document.querySelectorAll('.nav-link').forEach((link) => {
+                const name = link.dataset.name;
+                const url = link.dataset.url;
+                const href = link.getAttribute('href') || '';
+                
+                // Set active state
+                if (name.toLowerCase() === activeName.toLowerCase()) {
+                    link.classList.add('nav-active');
+                }
+                
+                // Add click handler untuk smooth transition
+                link.addEventListener('click', (e) => {
+                    const isAnchor = href.startsWith('#');
+                    if (isAnchor) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            setActiveByName(name);
+                        }
+                        return;
+                    }
+                    // Non-anchor: keep existing behavior
+                    updateSliderPosition(link);
+                    const loader = document.getElementById('page-loader');
+                    if (!loader) return;
+                    loader.classList.add('show');
+                    e.preventDefault();
+                    const targetUrl = url;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => { window.location.href = targetUrl; }, 600);
+                });
+                
+                // Add hover effect untuk preview slider position
+                link.addEventListener('mouseenter', () => {
+                    const slider = document.getElementById('nav-slider');
+                    if (!slider) return;
+                    
+                    const container = document.querySelector('.nav-container');
+                    if (!container) return;
+                    
+                    const containerRect = container.getBoundingClientRect();
+                    const linkRect = link.getBoundingClientRect();
+                    
+                    const left = linkRect.left - containerRect.left;
+                    const width = linkRect.width;
+                    
+                    // Simpan state asli
+                    link._originalLeft = slider.style.left;
+                    link._originalWidth = slider.style.width;
+                    link._originalHeight = slider.style.height;
+                    
+                    // Preview position dengan animasi
+                    slider.style.width = `${width + 16}px`;
+                    slider.style.left = `${left - 8}px`;
+                    slider.style.height = '36px';
+                    slider.style.transform = 'translateY(-50%) scale(1.05)';
+                    slider.style.opacity = '0.2';
+                });
+                
+                link.addEventListener('mouseleave', () => {
+                    const slider = document.getElementById('nav-slider');
+                    if (!slider) return;
+                    
+                    // Kembalikan ke state asli
+                    slider.style.width = link._originalWidth || '';
+                    slider.style.left = link._originalLeft || '';
+                    slider.style.height = link._originalHeight || '';
+                    slider.style.transform = 'translateY(-50%) scale(1)';
+                    slider.style.opacity = '0.1';
+                });
+            });
+
+            // Handle mobile nav clicks
+            document.querySelectorAll('.nav-link-mobile').forEach((link) => {
+                const name = link.dataset.name;
+                const href = link.getAttribute('href') || '';
+                
+                // Set active state
+                if (name.toLowerCase() === activeName.toLowerCase()) {
+                    link.classList.add('nav-active');
+                }
+                
+                link.addEventListener('click', (e) => {
+                    const isAnchor = href.startsWith('#');
+                    if (isAnchor) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            setActiveByName(name);
+                        }
+                        mobileMenu.classList.add('translate-x-full');
+                        return;
+                    }
+                    // Non-anchor: show loader and close
+                    const loader = document.getElementById('page-loader');
+                    if (loader) loader.classList.add('show');
+                    mobileMenu.classList.add('translate-x-full');
+                });
+            });
+
+            // Scroll spy: set About active when #about intersects
+            const aboutSection = document.querySelector('#about');
+            if (aboutSection) {
+                const spyObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            setActiveByName('About');
+                        } else {
+                            // If near top, highlight Home
+                            if (window.scrollY < (aboutSection.offsetTop - 100)) {
+                                setActiveByName('Home');
+                            }
+                        }
+                    });
+                }, { threshold: 0.3 });
+                spyObserver.observe(aboutSection);
+            }
+        });
+    </script>
+</nav>
